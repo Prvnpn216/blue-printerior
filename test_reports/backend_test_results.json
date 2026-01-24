@@ -1,0 +1,142 @@
+{
+  "summary": {
+    "total_tests": 22,
+    "passed_tests": 21,
+    "success_rate": 95.45454545454545,
+    "timestamp": "2026-01-24T20:09:20.129943"
+  },
+  "detailed_results": [
+    {
+      "test": "Admin Registration",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.049974"
+    },
+    {
+      "test": "Admin Login",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.315721"
+    },
+    {
+      "test": "Get All Projects",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.355917"
+    },
+    {
+      "test": "Get Featured Projects",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.399279"
+    },
+    {
+      "test": "Create Project",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.456321"
+    },
+    {
+      "test": "Get Project by ID",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.496947"
+    },
+    {
+      "test": "Update Project",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.536957"
+    },
+    {
+      "test": "Delete Project",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.578028"
+    },
+    {
+      "test": "Get All Products",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.620189"
+    },
+    {
+      "test": "Create Product",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.666377"
+    },
+    {
+      "test": "Get Product by ID",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.699608"
+    },
+    {
+      "test": "Update Product",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.737161"
+    },
+    {
+      "test": "Delete Product",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.774302"
+    },
+    {
+      "test": "Create Product for Inquiry Test",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.816110"
+    },
+    {
+      "test": "Create Inquiry (No Auth)",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.868637"
+    },
+    {
+      "test": "Get All Inquiries (Auth Required)",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.905185"
+    },
+    {
+      "test": "Delete Test Product",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-24T20:09:19.937861"
+    },
+    {
+      "test": "Image Upload Test",
+      "success": true,
+      "details": "Status: 422",
+      "timestamp": "2026-01-24T20:09:19.982929"
+    },
+    {
+      "test": "Get Non-existent Project",
+      "success": true,
+      "details": "Status: 404",
+      "timestamp": "2026-01-24T20:09:20.023201"
+    },
+    {
+      "test": "Get Non-existent Product",
+      "success": true,
+      "details": "Status: 404",
+      "timestamp": "2026-01-24T20:09:20.057980"
+    },
+    {
+      "test": "Unauthorized Project Creation",
+      "success": false,
+      "details": "Status: 403 (Expected: 401), Response: {'detail': 'Not authenticated'}",
+      "timestamp": "2026-01-24T20:09:20.092768"
+    },
+    {
+      "test": "Invalid Login Credentials",
+      "success": true,
+      "details": "Status: 401",
+      "timestamp": "2026-01-24T20:09:20.129130"
+    }
+  ]
+}
