@@ -1,72 +1,257 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, UploadFile, File, Form
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict
-from typing import List
+from pydantic import BaseModel, Field, ConfigDict, EmailStr
+from typing import List, Optional
 import uuid
-from datetime import datetime, timezone
-
+from datetime import datetime, timezone, timedelta
+import jwt
+from passlib.context import CryptContext
+import base64
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Create the main app without a prefix
 app = FastAPI()
-
-# Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+security = HTTPBearer()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# Define Models
-class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
-    
+SECRET_KEY = os.environ.get('SECRET_KEY', 'interior-design-secret-key-2025')
+ALGORITHM = "HS256"
+
+class Hotspot(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    x: float
+    y: float
+    product_id: str
+    product_name: str
 
-class StatusCheckCreate(BaseModel):
-    client_name: str
+class ProjectImage(BaseModel):
+    url: str
+    hotspots: List[Hotspot] = []
 
-# Add your routes to the router instead of directly to app
-@api_router.get("/")
-async def root():
-    return {"message": "Hello World"}
+class Project(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    description: str
+    category: str
+    featured: bool = False
+    images: List[ProjectImage] = []
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.model_dump()
-    status_obj = StatusCheck(**status_dict)
+class ProjectCreate(BaseModel):
+    title: str
+    description: str
+    category: str
+    featured: bool = False
+    images: List[ProjectImage] = []
+
+class Product(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    description: str
+    price: float
+    image: str
+    category: str
+    in_stock: bool = True
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+class ProductCreate(BaseModel):
+    name: str
+    description: str
+    price: float
+    image: str
+    category: str
+    in_stock: bool = True
+
+class Inquiry(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: EmailStr
+    phone: str
+    product_id: str
+    product_name: str
+    message: str = ""
+    status: str = "pending"
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+class InquiryCreate(BaseModel):
+    name: str
+    email: EmailStr
+    phone: str
+    product_id: str
+    product_name: str
+    message: str = ""
+
+class AdminUser(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    username: str
+    password_hash: str
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+class AdminLogin(BaseModel):
+    username: str
+    password: str
+
+class AdminRegister(BaseModel):
+    username: str
+    password: str
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(days=7)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+        token = credentials.credentials
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+@api_router.post("/auth/register", response_model=TokenResponse)
+async def register_admin(admin: AdminRegister):
+    existing = await db.admins.find_one({"username": admin.username}, {"_id": 0})
+    if existing:
+        raise HTTPException(status_code=400, detail="Username already exists")
     
-    # Convert to dict and serialize datetime to ISO string for MongoDB
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
+    password_hash = pwd_context.hash(admin.password)
+    admin_obj = AdminUser(username=admin.username, password_hash=password_hash)
+    doc = admin_obj.model_dump()
+    await db.admins.insert_one(doc)
     
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
+    token = create_access_token({"sub": admin.username, "id": admin_obj.id})
+    return TokenResponse(access_token=token)
 
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
+@api_router.post("/auth/login", response_model=TokenResponse)
+async def login_admin(admin: AdminLogin):
+    user = await db.admins.find_one({"username": admin.username}, {"_id": 0})
+    if not user or not pwd_context.verify(admin.password, user["password_hash"]):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
     
-    # Convert ISO string timestamps back to datetime objects
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    
-    return status_checks
+    token = create_access_token({"sub": admin.username, "id": user["id"]})
+    return TokenResponse(access_token=token)
 
-# Include the router in the main app
+@api_router.get("/projects", response_model=List[Project])
+async def get_projects(featured: Optional[bool] = None):
+    query = {"featured": featured} if featured is not None else {}
+    projects = await db.projects.find(query, {"_id": 0}).to_list(1000)
+    return projects
+
+@api_router.get("/projects/{project_id}", response_model=Project)
+async def get_project(project_id: str):
+    project = await db.projects.find_one({"id": project_id}, {"_id": 0})
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project
+
+@api_router.post("/projects", response_model=Project)
+async def create_project(project: ProjectCreate, payload: dict = Depends(verify_token)):
+    project_obj = Project(**project.model_dump())
+    doc = project_obj.model_dump()
+    await db.projects.insert_one(doc)
+    return project_obj
+
+@api_router.put("/projects/{project_id}", response_model=Project)
+async def update_project(project_id: str, project: ProjectCreate, payload: dict = Depends(verify_token)):
+    existing = await db.projects.find_one({"id": project_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    updated_data = project.model_dump()
+    updated_data["id"] = project_id
+    updated_data["created_at"] = existing["created_at"]
+    
+    await db.projects.update_one({"id": project_id}, {"$set": updated_data})
+    return Project(**updated_data)
+
+@api_router.delete("/projects/{project_id}")
+async def delete_project(project_id: str, payload: dict = Depends(verify_token)):
+    result = await db.projects.delete_one({"id": project_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return {"message": "Project deleted successfully"}
+
+@api_router.get("/products", response_model=List[Product])
+async def get_products():
+    products = await db.products.find({}, {"_id": 0}).to_list(1000)
+    return products
+
+@api_router.get("/products/{product_id}", response_model=Product)
+async def get_product(product_id: str):
+    product = await db.products.find_one({"id": product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product
+
+@api_router.post("/products", response_model=Product)
+async def create_product(product: ProductCreate, payload: dict = Depends(verify_token)):
+    product_obj = Product(**product.model_dump())
+    doc = product_obj.model_dump()
+    await db.products.insert_one(doc)
+    return product_obj
+
+@api_router.put("/products/{product_id}", response_model=Product)
+async def update_product(product_id: str, product: ProductCreate, payload: dict = Depends(verify_token)):
+    existing = await db.products.find_one({"id": product_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    updated_data = product.model_dump()
+    updated_data["id"] = product_id
+    updated_data["created_at"] = existing["created_at"]
+    
+    await db.products.update_one({"id": product_id}, {"$set": updated_data})
+    return Product(**updated_data)
+
+@api_router.delete("/products/{product_id}")
+async def delete_product(product_id: str, payload: dict = Depends(verify_token)):
+    result = await db.products.delete_one({"id": product_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return {"message": "Product deleted successfully"}
+
+@api_router.post("/inquiries", response_model=Inquiry)
+async def create_inquiry(inquiry: InquiryCreate):
+    inquiry_obj = Inquiry(**inquiry.model_dump())
+    doc = inquiry_obj.model_dump()
+    await db.inquiries.insert_one(doc)
+    return inquiry_obj
+
+@api_router.get("/inquiries", response_model=List[Inquiry])
+async def get_inquiries(payload: dict = Depends(verify_token)):
+    inquiries = await db.inquiries.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return inquiries
+
+@api_router.post("/upload-image")
+async def upload_image(file: UploadFile = File(...), payload: dict = Depends(verify_token)):
+    contents = await file.read()
+    base64_encoded = base64.b64encode(contents).decode('utf-8')
+    mime_type = file.content_type or 'image/jpeg'
+    data_url = f"data:{mime_type};base64,{base64_encoded}"
+    return {"url": data_url}
+
 app.include_router(api_router)
 
 app.add_middleware(
@@ -77,7 +262,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
