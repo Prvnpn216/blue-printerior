@@ -1,0 +1,155 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "E1_Interior_Portfolio",
+      "tone": "Luxurious, Curated, Warm, Minimalist",
+      "archetype": "Organic & Earthy (Archetype 1) mixed with Jewel & Luxury (Archetype 5)",
+      "principles": [
+        "Fusion over Imitation",
+        "Emotion First",
+        "Content is King",
+        "Zoom In (Details)",
+        "Negative Space"
+      ]
+    },
+    "typography": {
+      "font_family": {
+        "headings": "Playfair Display, serif",
+        "body": "Manrope, sans-serif",
+        "mono": "JetBrains Mono, monospace"
+      },
+      "weights": {
+        "light": 300,
+        "regular": 400,
+        "medium": 500,
+        "bold": 700
+      },
+      "scale": {
+        "h1": "text-5xl md:text-7xl tracking-tight leading-none font-light",
+        "h2": "text-4xl md:text-5xl tracking-tight leading-tight font-light",
+        "h3": "text-2xl md:text-3xl tracking-normal font-normal",
+        "body_lg": "text-lg md:text-xl leading-relaxed text-muted-foreground",
+        "body": "text-base leading-relaxed text-muted-foreground",
+        "caption": "text-xs tracking-widest uppercase font-medium text-muted-foreground"
+      },
+      "imports": [
+        "@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');"
+      ]
+    },
+    "colors": {
+      "palette": {
+        "background": "#F9F8F6",
+        "foreground": "#1A1A1A",
+        "primary": "#1A1A1A",
+        "primary_foreground": "#FFFFFF",
+        "secondary": "#E6E4DF",
+        "secondary_foreground": "#1A1A1A",
+        "muted": "#F2F0EB",
+        "muted_foreground": "#66605B",
+        "accent": "#C5A059",
+        "accent_foreground": "#FFFFFF",
+        "border": "#E6E4DF",
+        "input": "#E6E4DF",
+        "ring": "#C5A059"
+      },
+      "gradients": {
+        "hero_overlay": "linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 50%)",
+        "subtle_glow": "radial-gradient(circle at center, rgba(197, 160, 89, 0.15) 0%, rgba(255,255,255,0) 70%)"
+      },
+      "usage": {
+        "body_bg": "bg-[#F9F8F6]",
+        "card_bg": "bg-white",
+        "text_main": "text-[#1A1A1A]",
+        "text_muted": "text-[#66605B]",
+        "border_subtle": "border-[#E6E4DF]"
+      }
+    },
+    "spacing": {
+      "container_padding": "px-6 md:px-12 lg:px-24",
+      "section_gap": "py-24 md:py-32",
+      "element_gap": "gap-8 md:gap-12",
+      "grid_gap": "gap-6 md:gap-8"
+    },
+    "visual_enhancers": {
+      "radius": {
+        "default": "rounded-none",
+        "button": "rounded-full",
+        "card": "rounded-sm"
+      },
+      "shadows": {
+        "soft": "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+        "hover": "0 10px 40px -10px rgba(0, 0, 0, 0.1)"
+      },
+      "borders": {
+        "default": "border border-[#E6E4DF]",
+        "active": "border border-[#1A1A1A]"
+      },
+      "animations": {
+        "fade_in": "animate-in fade-in duration-700 ease-out",
+        "slide_up": "animate-in slide-in-from-bottom-8 duration-700 ease-out",
+        "pulse_slow": "animate-pulse duration-[3000ms]"
+      }
+    },
+    "components": {
+      "buttons": {
+        "primary": "bg-[#1A1A1A] text-white hover:bg-[#333333] rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all duration-300",
+        "secondary": "bg-transparent border border-[#1A1A1A] text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all duration-300",
+        "ghost": "text-[#1A1A1A] hover:text-[#C5A059] underline-offset-4 hover:underline transition-colors"
+      },
+      "cards": {
+        "project": "group relative overflow-hidden bg-white border border-[#E6E4DF] transition-all duration-500 hover:shadow-lg",
+        "product": "bg-transparent group cursor-pointer"
+      },
+      "inputs": {
+        "default": "bg-transparent border-b border-[#E6E4DF] focus:border-[#1A1A1A] rounded-none px-0 py-4 outline-none transition-colors placeholder:text-[#66605B]/50"
+      }
+    },
+    "layout_strategies": {
+      "hero": "Full screen height (h-screen). Slow zoom background image. Text bottom-left aligned. Minimal UI.",
+      "grid_bento": "Use CSS Grid. Mix of col-span-1 and col-span-2. Asymmetrical balance.",
+      "product_detail": "Split screen. Left: Sticky image gallery. Right: Scrollable details."
+    },
+    "interactive_elements": {
+      "hotspot": {
+        "container": "absolute w-8 h-8 -ml-4 -mt-4 cursor-pointer z-20 group",
+        "dot": "w-3 h-3 bg-white rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-lg transition-transform duration-300 group-hover:scale-125",
+        "ring": "w-full h-full border border-white/50 rounded-full animate-ping opacity-75",
+        "tooltip": "absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-48 bg-white p-3 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto text-center"
+      }
+    },
+    "assets": {
+      "images": {
+        "hero": [
+          "https://images.unsplash.com/photo-1762545078318-8443881c2d83?q=85&w=1920&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1758448511421-debb41f3e621?q=85&w=1920&auto=format&fit=crop"
+        ],
+        "projects": [
+          "https://images.unsplash.com/photo-1763485956303-daf935882443?q=85&w=800&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1668026694348-b73c5eb5e299?q=85&w=800&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1593136573819-c3b57b8caf29?q=85&w=800&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1669653862523-904e92ee90b4?q=85&w=800&auto=format&fit=crop"
+        ],
+        "products": [
+          "https://images.unsplash.com/photo-1760684857349-1a181af34840?q=85&w=600&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1762803841508-328e11286dfc?q=85&w=600&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1769108407009-98ef84a606dd?q=85&w=600&auto=format&fit=crop"
+        ]
+      },
+      "icons": "Use lucide-react. Thin stroke width (1.5px). Elegant and minimal."
+    },
+    "universal_guidelines": {
+      "general": [
+        "Do not use generic AI slop designs.",
+        "Use 2-3x more spacing than usual.",
+        "Every interaction needs micro-animations.",
+        "Use 'sonner' for toasts.",
+        "All interactive elements MUST have data-testid."
+      ],
+      "accessibility": [
+        "Ensure contrast ratios meet WCAG AA.",
+        "Respect prefers-reduced-motion.",
+        "Use semantic HTML."
+      ]
+    }
+  }
+}
