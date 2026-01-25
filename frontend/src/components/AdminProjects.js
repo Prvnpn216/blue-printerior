@@ -165,6 +165,7 @@ function AdminProjects() {
       description: '',
       category: '',
       featured: false,
+      featured_image: '',
       images: []
     });
     setEditingProject(null);
