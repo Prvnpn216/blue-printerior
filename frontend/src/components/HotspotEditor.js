@@ -132,7 +132,7 @@ function HotspotEditor({ image, onSave, onClose }) {
 
       {/* Product Selector Modal */}
       {showProductSelector && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4" style={{ zIndex: 10000 }}>
           <div className="bg-white max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6" data-testid="product-selector">
             <h3 className="font-heading text-xl text-[#1A1A1A] mb-4">Select Product</h3>
             
@@ -151,6 +151,12 @@ function HotspotEditor({ image, onSave, onClose }) {
               ))}
             </div>
 
+            {products.length === 0 && (
+              <p className="text-center text-[#66605B] py-8">
+                No products available. Please create products first.
+              </p>
+            )}
+
             <Button
               onClick={() => setShowProductSelector(false)}
               className="w-full mt-4 border border-[#1A1A1A] text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white rounded-full py-3"
@@ -158,6 +164,12 @@ function HotspotEditor({ image, onSave, onClose }) {
               Cancel
             </Button>
           </div>
+        </div>
+      )}
+    </div>
+  );
+
+  return createPortal(modalContent, document.body);
         </div>
       )}
     </div>
