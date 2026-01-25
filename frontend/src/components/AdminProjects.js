@@ -104,11 +104,12 @@ function AdminProjects() {
         }
       });
 
-      setFormData({
-        ...formData,
-        images: [...formData.images, { url: response.data.url, hotspots: [] }]
-      });
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, { url: response.data.url, hotspots: [] }]
+      }));
       toast.success('Image uploaded successfully!');
+      e.target.value = '';
     } catch (error) {
       toast.error('Failed to upload image');
     }
