@@ -108,8 +108,9 @@ function AdminProducts() {
         }
       });
 
-      setFormData({ ...formData, image: response.data.url });
+      setFormData(prev => ({ ...prev, image: response.data.url }));
       toast.success('Image uploaded successfully!');
+      e.target.value = '';
     } catch (error) {
       toast.error('Failed to upload image');
     }
