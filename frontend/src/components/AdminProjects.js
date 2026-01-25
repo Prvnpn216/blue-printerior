@@ -189,8 +189,8 @@ function AdminProjects() {
         {projects.map((project) => (
           <div key={project.id} className="bg-white border border-[#E6E4DF] overflow-hidden" data-testid={`project-item-${project.id}`}>
             <div className="aspect-[4/3] overflow-hidden bg-[#F2F0EB]">
-              {project.images[0]?.url ? (
-                <img src={project.images[0].url} alt={project.title} className="w-full h-full object-cover" />
+              {project.featured_image ? (
+                <img src={project.featured_image} alt={project.title} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <ImageIcon className="w-12 h-12 text-[#66605B]" />
