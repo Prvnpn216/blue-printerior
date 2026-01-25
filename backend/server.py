@@ -48,6 +48,7 @@ class Project(BaseModel):
     description: str
     category: str
     featured: bool = False
+    featured_image: str = ""
     images: List[ProjectImage] = []
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
@@ -56,6 +57,7 @@ class ProjectCreate(BaseModel):
     description: str
     category: str
     featured: bool = False
+    featured_image: str = ""
     images: List[ProjectImage] = []
 
 class Product(BaseModel):
