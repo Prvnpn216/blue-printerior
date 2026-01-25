@@ -84,9 +84,34 @@ function AdminProjects() {
       description: project.description,
       category: project.category,
       featured: project.featured,
+      featured_image: project.featured_image || '',
       images: project.images || []
     });
     setShowDialog(true);
+  };
+
+  const handleFeaturedImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const token = localStorage.getItem('admin_token');
+    const formDataUpload = new FormData();
+    formDataUpload.append('file', file);
+
+    try {
+      const response = await axios.post(`${API}/upload-image`, formDataUpload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      setFormData(prev => ({ ...prev, featured_image: response.data.url }));
+      toast.success('Featured image uploaded successfully!');
+      e.target.value = '';
+    } catch (error) {
+      toast.error('Failed to upload featured image');
+    }
   };
 
   const handleImageUpload = async (e) => {
@@ -109,10 +134,10 @@ function AdminProjects() {
         ...prev,
         images: [...prev.images, { url: response.data.url, hotspots: [] }]
       }));
-      toast.success('Image uploaded successfully!');
+      toast.success('Gallery image uploaded successfully!');
       e.target.value = '';
     } catch (error) {
-      toast.error('Failed to upload image');
+      toast.error('Failed to upload gallery image');
     }
   };
 
