@@ -156,7 +156,7 @@ function HomePage() {
                   <div className="relative overflow-hidden bg-white border border-[#E6E4DF] transition-all duration-500 hover:shadow-lg">
                     <div className="aspect-[4/3] overflow-hidden">
                       <img
-                        src={project.images[0]?.url || 'https://images.unsplash.com/photo-1763485956303-daf935882443?q=85&w=800&auto=format&fit=crop'}
+                        src={project.featured_image || project.images[0]?.url || 'https://images.unsplash.com/photo-1763485956303-daf935882443?q=85&w=800&auto=format&fit=crop'}
                         alt={project.title}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
