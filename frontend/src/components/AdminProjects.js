@@ -267,38 +267,48 @@ function AdminProjects() {
 
             <div>
               <Label className="text-sm uppercase tracking-wider text-[#66605B] mb-2 block">Images</Label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                data-testid="project-image-upload"
-                className="mb-4 text-sm"
-              />
-              
-              <div className="grid grid-cols-2 gap-3">
-                {formData.images.map((image, idx) => (
-                  <div key={idx} className="relative border border-[#E6E4DF] p-2">
-                    <img src={image.url} alt={`Project ${idx + 1}`} className="w-full h-32 object-cover" />
-                    <div className="flex gap-1 mt-2">
-                      <Button
-                        type="button"
-                        onClick={() => handleEditHotspots(idx)}
-                        data-testid={`edit-hotspots-${idx}`}
-                        className="flex-1 bg-[#C5A059] text-white hover:bg-[#a88742] rounded py-1 text-xs"
-                      >
-                        Edit Dots ({image.hotspots?.length || 0})
-                      </Button>
-                      <Button
-                        type="button"
-                        onClick={() => handleRemoveImage(idx)}
-                        className="bg-red-600 text-white hover:bg-red-700 rounded px-2 text-xs"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+              <div className="mb-4">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  data-testid="project-image-upload"
+                  className="text-sm"
+                  key={formData.images.length}
+                />
+                <p className="text-xs text-[#66605B] mt-1">Upload images for this project</p>
               </div>
+              
+              {formData.images.length > 0 ? (
+                <div className="grid grid-cols-2 gap-3">
+                  {formData.images.map((image, idx) => (
+                    <div key={idx} className="relative border border-[#E6E4DF] p-2 bg-white">
+                      <img src={image.url} alt={`Project ${idx + 1}`} className="w-full h-32 object-cover mb-2" />
+                      <div className="flex gap-1">
+                        <Button
+                          type="button"
+                          onClick={() => handleEditHotspots(idx)}
+                          data-testid={`edit-hotspots-${idx}`}
+                          className="flex-1 bg-[#C5A059] text-white hover:bg-[#a88742] rounded py-1 text-xs"
+                        >
+                          Edit Dots ({image.hotspots?.length || 0})
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={() => handleRemoveImage(idx)}
+                          className="bg-red-600 text-white hover:bg-red-700 rounded px-2 text-xs"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-[#66605B] py-4 border border-dashed border-[#E6E4DF] text-center">
+                  No images uploaded yet
+                </p>
+              )}
             </div>
 
             <div className="flex gap-3 pt-4">
