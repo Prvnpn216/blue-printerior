@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Plus } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -17,6 +18,10 @@ function HotspotEditor({ image, onSave, onClose }) {
 
   useEffect(() => {
     fetchProducts();
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, []);
 
   const fetchProducts = async () => {
@@ -60,8 +65,8 @@ function HotspotEditor({ image, onSave, onClose }) {
     onSave(hotspots);
   };
 
-  return (
-    <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" data-testid="hotspot-editor">
+  const modalContent = (
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4" style={{ zIndex: 9999 }} data-testid="hotspot-editor">
       <div className="bg-white max-w-6xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-[#E6E4DF] p-4 flex items-center justify-between z-10">
           <h2 className="font-heading text-2xl text-[#1A1A1A]">Edit Hotspots</h2>
