@@ -293,7 +293,38 @@ function AdminProjects() {
             </div>
 
             <div>
-              <Label className="text-sm uppercase tracking-wider text-[#66605B] mb-2 block">Images</Label>
+              <Label className="text-sm uppercase tracking-wider text-[#66605B] mb-2 block">Featured Image (Thumbnail)</Label>
+              <p className="text-xs text-[#66605B] mb-2">This image will be shown on the homepage</p>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFeaturedImageUpload}
+                data-testid="project-featured-image-upload"
+                className="text-sm mb-3"
+                key={formData.featured_image}
+              />
+              
+              {formData.featured_image ? (
+                <div className="relative border border-[#E6E4DF] p-2 bg-white w-48">
+                  <img src={formData.featured_image} alt="Featured" className="w-full h-32 object-cover mb-2" />
+                  <Button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, featured_image: '' }))}
+                    className="w-full bg-red-600 text-white hover:bg-red-700 rounded py-1 text-xs"
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ) : (
+                <p className="text-sm text-[#66605B] py-4 border border-dashed border-[#E6E4DF] text-center w-48">
+                  No featured image
+                </p>
+              )}
+            </div>
+
+            <div>
+              <Label className="text-sm uppercase tracking-wider text-[#66605B] mb-2 block">Project Gallery Images</Label>
+              <p className="text-xs text-[#66605B] mb-2">Upload images for the project detail page. You can add hotspots to these images.</p>
               <div className="mb-4">
                 <input
                   type="file"
@@ -303,7 +334,6 @@ function AdminProjects() {
                   className="text-sm"
                   key={formData.images.length}
                 />
-                <p className="text-xs text-[#66605B] mt-1">Upload images for this project</p>
               </div>
               
               {formData.images.length > 0 ? (
