@@ -267,6 +267,9 @@ async def upload_image(file: UploadFile = File(...), payload: dict = Depends(ver
 
 app.include_router(api_router)
 
+# Mount static files for uploads
+app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
