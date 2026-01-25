@@ -253,11 +253,17 @@ async def get_inquiries(payload: dict = Depends(verify_token)):
 
 @api_router.post("/upload-image")
 async def upload_image(file: UploadFile = File(...), payload: dict = Depends(verify_token)):
-    contents = await file.read()
-    base64_encoded = base64.b64encode(contents).decode('utf-8')
-    mime_type = file.content_type or 'image/jpeg'
-    data_url = f"data:{mime_type};base64,{base64_encoded}"
-    return {"url": data_url}
+    file_ext = file.filename.split('.')[-1]
+    file_name = f"{uuid.uuid4()}.{file_ext}"
+    file_path = UPLOAD_DIR / file_name
+    
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    backend_url = os.environ.get('BACKEND_URL', 'https://design-portfolio-412.preview.emergentagent.com')
+    file_url = f"{backend_url}/uploads/{file_name}"
+    
+    return {"url": file_url}
 
 app.include_router(api_router)
 
