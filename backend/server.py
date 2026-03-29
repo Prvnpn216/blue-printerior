@@ -285,8 +285,6 @@ async def get_upload(filename: str):
     return FileResponse(file_path, media_type=media_type)
 
 # Mount static files for uploads BEFORE other routes
-app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
-
 app.include_router(api_router)
 
 app.add_middleware(
