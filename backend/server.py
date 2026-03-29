@@ -265,10 +265,10 @@ async def upload_image(file: UploadFile = File(...), payload: dict = Depends(ver
     
     return {"url": file_url}
 
-app.include_router(api_router)
-
-# Mount static files for uploads
+# Mount static files for uploads BEFORE other routes
 app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
+
+app.include_router(api_router)
 
 app.add_middleware(
     CORSMiddleware,
