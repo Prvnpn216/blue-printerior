@@ -23,6 +23,13 @@ function Navbar() {
               Home
             </Link>
             <Link
+              to="/gallery"
+              data-testid="nav-gallery-link"
+              className="text-sm uppercase tracking-widest text-[#66605B] hover:text-[#1A1A1A] transition-colors"
+            >
+              Gallery
+            </Link>
+            <Link
               to="/products"
               data-testid="nav-products-link"
               className="text-sm uppercase tracking-widest text-[#66605B] hover:text-[#1A1A1A] transition-colors"
