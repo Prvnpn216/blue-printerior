@@ -66,6 +66,13 @@ function Navbar() {
               Home
             </Link>
             <Link
+              to="/gallery"
+              className="block text-sm uppercase tracking-widest text-[#66605B] hover:text-[#1A1A1A] transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Gallery
+            </Link>
+            <Link
               to="/products"
               className="block text-sm uppercase tracking-widest text-[#66605B] hover:text-[#1A1A1A] transition-colors"
               onClick={() => setIsMenuOpen(false)}
