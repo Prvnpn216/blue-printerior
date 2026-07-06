@@ -22,7 +22,11 @@ function GalleryPage() {
   }, []);
 
   useEffect(() => {
-    filterImages();
+    if (selectedCategory === 'all') {
+      setFilteredImages(allImages);
+    } else {
+      setFilteredImages(allImages.filter(img => img.category === selectedCategory));
+    }
   }, [selectedCategory, allImages]);
 
   const fetchProjects = async () => {
@@ -67,14 +71,6 @@ function GalleryPage() {
       console.error('Error fetching projects:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const filterImages = () => {
-    if (selectedCategory === 'all') {
-      setFilteredImages(allImages);
-    } else {
-      setFilteredImages(allImages.filter(img => img.category === selectedCategory));
     }
   };
 
