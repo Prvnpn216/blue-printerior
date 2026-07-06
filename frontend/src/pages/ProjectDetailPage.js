@@ -18,19 +18,19 @@ function ProjectDetailPage() {
   const [showProductDialog, setShowProductDialog] = useState(false);
 
   useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        const response = await axios.get(`${API}/projects/${id}`);
+        setProject(response.data);
+      } catch (error) {
+        console.error('Error fetching project:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchProject();
   }, [id]);
-
-  const fetchProject = async () => {
-    try {
-      const response = await axios.get(`${API}/projects/${id}`);
-      setProject(response.data);
-    } catch (error) {
-      console.error('Error fetching project:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleHotspotClick = (hotspot) => {
     setSelectedProduct(hotspot);
